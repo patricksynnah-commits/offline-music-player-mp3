@@ -114,6 +114,3 @@ workflows:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
         submit_as_draft: false
-      
-      github_releases:
-        release: true
