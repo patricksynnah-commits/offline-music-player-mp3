@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Offline Music Player</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="songs">Songs</string>
+    <string name="playlists">Playlists</string>
+    <string name="search">Search</string>
+    <string name="no_songs">No songs found</string>
+    <string name="no_playlists">No playlists yet</string>
+    <string name="create_playlist">Create Playlist</string>
+    <string name="delete">Delete</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="repeat">Repeat</string>
+    <string name="volume">Volume</string>
+    <string name="unknown_artist">Unknown Artist</string>
+    <string name="unknown_album">Unknown Album</string>
+</resources>
