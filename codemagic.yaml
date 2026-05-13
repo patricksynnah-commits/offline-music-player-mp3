@@ -5,7 +5,6 @@ workflows:
     
     environment:
       java: 11
-      ndk: r21b
 
     triggering:
       events:
@@ -54,7 +53,6 @@ workflows:
     
     environment:
       java: 11
-      ndk: r21b
 
     triggering:
       events:
@@ -64,10 +62,6 @@ workflows:
       - name: Set Android SDK path
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-      
-      - name: Decode Keystore
-        script: |
-          echo $KEYSTORE_BASE64 | base64 -d > release.keystore
       
       - name: Build Signed Release APK
         script: |
