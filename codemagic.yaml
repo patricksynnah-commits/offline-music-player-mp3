@@ -2,7 +2,6 @@ workflows:
   android-workflow:
     name: Android Workflow
     max_build_duration: 120
-    instance_type: linux_x2
     
     environment:
       java: 11
@@ -57,7 +56,6 @@ workflows:
   android-release-workflow:
     name: Android Release Workflow
     max_build_duration: 120
-    instance_type: linux_x2
     
     environment:
       java: 11
