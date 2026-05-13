@@ -7,21 +7,15 @@ workflows:
     environment:
       java: 11
       ndk: r21b
-      android_sdk:
-        api_level: 34
-        build_tools_version: 34.0.0
-      groups:
-        - google_play # <-- (Includes GCLOUD_SERVICE_ACCOUNT_CREDENTIALS)
 
     triggering:
       events:
         - push
         - pull_request
       branch:
-        include_patterns:
-          - main
-          - develop
-          - feature/*
+        - main
+        - develop
+        - feature
 
     scripts:
       - name: Set Android SDK path
@@ -72,18 +66,10 @@ workflows:
     environment:
       java: 11
       ndk: r21b
-      android_sdk:
-        api_level: 34
-        build_tools_version: 34.0.0
-      groups:
-        - google_play
-        - release_keystore
 
     triggering:
       events:
         - tag
-      tag:
-        pattern: 'v\d+\.\d+\.\d+'
 
     scripts:
       - name: Set Android SDK path
