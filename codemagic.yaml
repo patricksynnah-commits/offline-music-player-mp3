@@ -47,11 +47,6 @@ workflows:
         notify:
           success: true
           failure: true
-      
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: internal
-        submit_as_draft: true
 
   android-release-workflow:
     name: Android Release Workflow
@@ -107,8 +102,3 @@ workflows:
         notify:
           success: true
           failure: true
-      
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: production
-        submit_as_draft: false
