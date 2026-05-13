@@ -1,0 +1,137 @@
+workflows:
+  android-workflow:
+    name: Android Workflow
+    max_build_duration: 120
+    instance_type: linux_x2
+    
+    environment:
+      java: 11
+      ndk: r21b
+      android_sdk:
+        api_level: 34
+        build_tools_version: 34.0.0
+      groups:
+        - google_play # <-- (Includes GCLOUD_SERVICE_ACCOUNT_CREDENTIALS)
+
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch:
+        include_patterns:
+          - main
+          - develop
+          - feature/*
+
+    scripts:
+      - name: Set Android SDK path
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+      
+      - name: Build APK
+        script: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
+      
+      - name: Build Release APK
+        script: |
+          ./gradlew assembleRelease
+      
+      - name: Run Unit Tests
+        script: |
+          ./gradlew test
+      
+      - name: Run Lint
+        script: |
+          ./gradlew lint
+
+    artifacts:
+      - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
+      - app/build/reports/**/*.html
+      - build/reports/**/*.xml
+
+    publishing:
+      email:
+        recipients:
+          - patricksynnah@gmail.com
+        notify:
+          success: true
+          failure: true
+      
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true
+
+  android-release-workflow:
+    name: Android Release Workflow
+    max_build_duration: 120
+    instance_type: linux_x2
+    
+    environment:
+      java: 11
+      ndk: r21b
+      android_sdk:
+        api_level: 34
+        build_tools_version: 34.0.0
+      groups:
+        - google_play
+        - release_keystore
+
+    triggering:
+      events:
+        - tag
+      tag:
+        pattern: 'v\d+\.\d+\.\d+'
+
+    scripts:
+      - name: Set Android SDK path
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+      
+      - name: Decode Keystore
+        script: |
+          echo $KEYSTORE_BASE64 | base64 -d > release.keystore
+      
+      - name: Build Signed Release APK
+        script: |
+          chmod +x ./gradlew
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=$FCI_BUILD_DIR/release.keystore \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEYSTORE_KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEYSTORE_KEY_PASSWORD
+      
+      - name: Build Signed Release Bundle
+        script: |
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=$FCI_BUILD_DIR/release.keystore \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEYSTORE_KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEYSTORE_KEY_PASSWORD
+      
+      - name: Run Tests
+        script: |
+          ./gradlew test
+
+    artifacts:
+      - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
+      - build/reports/**/*.html
+
+    publishing:
+      email:
+        recipients:
+          - patricksynnah@gmail.com
+        notify:
+          success: true
+          failure: true
+      
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: production
+        submit_as_draft: false
+      
+      github_releases:
+        release: true
