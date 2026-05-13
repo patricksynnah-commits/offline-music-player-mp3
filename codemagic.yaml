@@ -12,10 +12,6 @@ workflows:
       events:
         - push
         - pull_request
-      branch:
-        - main
-        - develop
-        - feature
 
     scripts:
       - name: Set Android SDK path
